@@ -1,0 +1,33 @@
+import SingleMessage from "../single_message.js";
+
+class PlainText extends SingleMessage {
+
+    #content;
+
+    static getElementType() {
+        return 1;
+    }
+
+    constructor(content) {
+        super();
+        this.#content = content;
+    }
+
+    getContent() {
+        return this.#content;
+    }
+
+    async toElement() {
+        return {
+            elementId: '',
+            elementType: PlainText.getElementType(),
+            extBufForUI: '0x',
+            textElement: {
+                content: this.#content
+            }
+        };
+    }
+
+}
+
+export default PlainText

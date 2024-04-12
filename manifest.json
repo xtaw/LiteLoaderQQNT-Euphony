@@ -4,15 +4,15 @@
     "name": "Euphony",
     "slug": "euphony",
     "description": "一个为LiteLoaderQQNT插件提供基础功能的依赖，用以替代LLAPI",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "authors": [{
         "name": "xtaw",
         "link": "https://github.com/xtaw"
     }],
     "platform": ["win32", "linux", "darwin"],
     "injects": {
-        "renderer": "./src/renderer.js",
-        "main": "./src/main.js",
-        "preload": "./src/preload.js"
+        "renderer": "./src/main/renderer.js",
+        "main": "./src/main/main.js",
+        "preload": "./src/main/preload.js"
     }
 }
