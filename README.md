@@ -10,8 +10,8 @@ const friend = euphony.Friend.fromUin(10000);
 friend.sendMessage(new euphony.PlainText('Hello World!'));
 ```
 这段代码会向 **qq号** 为 **10000** 的好友发送一条内容为 **Hello World!** 的纯文本消息。
-## 2. 添加至项目依赖
-**Euphony** 本身可作为依赖导入你的项目。你可以将 **Euphony** 插件文件夹放入到你的项目中并导入。
+## 2. 添加至项目依赖 (推荐)
+**Euphony** 本身可作为依赖导入你的项目。你可以将 **Euphony** 插件文件夹放入到你的项目中并导入，该方法可避免因依赖更新造成的插件bug。
 
 例如你的项目文件夹为 `LiteLoaderQQNT-Plugin`，`renderer.js` 位于 `LiteLoaderQQNT-Plugin/src/renderer.js`，你可以将 **Euphony** 复制到 `LiteLoaderQQNT-Plugin/LiteLoaderQQNT-Euphony`。
 
