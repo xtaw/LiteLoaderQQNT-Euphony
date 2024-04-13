@@ -10,29 +10,25 @@ const friend = euphony.Friend.fromUin(10000);
 friend.sendMessage(new euphony.PlainText('Hello World!'));
 ```
 这段代码会向 **qq号** 为 **10000** 的好友发送一条内容为 **Hello World!** 的纯文本消息。
-## 2. 添加至项目依赖 (推荐)
-**Euphony** 本身可作为依赖导入你的项目。你可以通过以下命令将其添加至你的项目依赖：
-```bash
-npm install git@github.com:xtaw/LiteLoaderQQNT-Euphony.git
-```
-如果你想更新 **Euphony** 到最新版本，你可以使用以下命令：
-```bash
-npm update liteloaderqqnt-euphony
-```
+## 2. 添加至项目依赖
+**Euphony** 本身可作为依赖导入你的项目。你可以将 **Euphony** 插件文件夹放入到你的项目中并导入。
+
+例如你的项目文件夹为 `LiteLoaderQQNT-Plugin`，`renderer.js` 位于 `LiteLoaderQQNT-Plugin/src/renderer.js`，你可以将 **Euphony** 复制到 `LiteLoaderQQNT-Plugin/LiteLoaderQQNT-Euphony`。
+
 现在，你可以直接在你的代码中使用 `import` 语句来导入 API：
 ```js
-import { Friend, PlainText } from "liteloaderqqnt-euphony";
+import { Friend, PlainText } from '../LiteLoaderQQNT-Euphony/src/index.js';
 ```
 具体有哪些可用的 API 可以在下文查看。
 ### 示例
 ```js
-import { Group, AtAll, PlainText, MessageChain } from "liteloaderqqnt-euphony";
+import { Group, AtAll, PlainText, MessageChain } from '../LiteLoaderQQNT-Euphony/src/index.js';
 const group = new Group(10000);
 group.sendMessage(new MessageChain().append(new AtAll('Content')).append(new PlainText('Hello World!')));
 ```
 这段代码会向 **群号** 为 **10000** 的群发送一条消息，其中包含一个显示为 **Content** 的@全体成员，以及一个内容为 **Hello World!** 的纯文本。
 ## 说明
-无论使用以上哪种方法，都必须添加 **Euphony** 本身至 **LiteLoaderQQNT** 中作为插件加载。如果你想让你的插件脱离 **Euphony** 插件独立运行，你可以手动在 `preload.js` 中导出相关对象，并在 `renderer.js` 中添加事件处理，具体实现可参考 `./src/main/preload.js` 与 `./src/main/renderer.js`。
+无论使用以上哪种方法，都必须添加 **Euphony** 本身至 **LiteLoaderQQNT** 中作为插件加载。
 # 三. API介绍
 请注意，由于 **Euphony** 目前正处于开发初期，各 API 并未完全实现，也并不稳定，很可能在将来发生很大变化。
 ## 1. Native
