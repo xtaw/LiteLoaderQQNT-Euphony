@@ -2,10 +2,12 @@ class EventChannel {
 
     #registry = new Map();
 
-    static #GLOBAL = new EventChannel();
-
-    static global() {
-        return EventChannel.#GLOBAL;
+    static fromNative() {
+        const eventChannel = new EventChannel();
+        euphonyNative.subscribeEvent('nodeIKernelMsgListener/onRecvMsg', payload => eventChannel.call('receive-message', payload));
+        euphonyNative.subscribeEvent('nodeIKernelMsgListener/onRecvActiveMsg', payload => eventChannel.call('receive-message', payload));
+        euphonyNative.subscribeEvent('nodeIKernelMsgListener/onAddSendMsg', payload => eventChannel.call('send-message', payload));
+        return eventChannel;
     }
 
     subscribeEvent(eventName, handler) {

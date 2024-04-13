@@ -280,7 +280,7 @@ constructor(path, duration)
 该构造器接收路径和持续时长，构造出的对象代表语音音频路径为 `path`，持续时长为 `duration` 的语音。
 若在构造时不传入 `duration`，则 `toElement` 函数会自动尝试获取语音时长（可能并不准确）。
 ## 4. 事件
-**Euphony** 中所有事件操作均由 `EventChannel` 完成，其中的 `#GLOBAL` 是整个插件公共的事件通道，所有基础事件均由该通道处理。
+**Euphony** 中所有事件操作均由 `EventChannel` 完成。
 
 目前可用的基础事件有：
 1. receive-message 接收到新消息
@@ -289,16 +289,14 @@ constructor(path, duration)
 ### I. EventChannel
 `EventChannel` 是 **Euphony** 完成事件操作的通道。
 #### 属性
-##### (1). #GLOBAL
-该私有静态属性代表整个插件公共的事件通道。
-##### (2). #registry
+##### (1). #registry
 该私有属性代表该事件通道所注册的所有监听器。
 #### 函数
-##### (1). global
+##### (1). fromNative
 ```js
-static global()
+static fromNative()
 ```
-该函数返回 `#GLOBAL`。
+该函数构造并返回一个带有基础事件触发器的 `EventChannel`，可用的基础事件列表见上文。
 ##### (2). subscribeEvent
 ```js
 subscribeEvent(eventName, handler)
