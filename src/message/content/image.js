@@ -18,15 +18,13 @@ class Image extends SingleMessage {
     }
 
     async toElement() {
-        const fileType = await euphonyNative.invokeNative('ns-FsApi', 'getFileType', false, this.#path);
         const fileMd5 = await euphonyNative.invokeNative('ns-FsApi', 'getFileMd5', false, this.#path);
         const imageSize = await euphonyNative.invokeNative('ns-FsApi', 'getImageSizeFromPath', false, this.#path);
         const fileSize = await euphonyNative.invokeNative('ns-FsApi', 'getFileSize', false, this.#path);
-        const nativeFileName = `${ fileMd5 }.${ fileType.ext }`;
-        const nativeFilePath = await euphonyNative.invokeNative('ns-ntApi', 'nodeIKernelMsgService/getRichMediaFilePathForGuild', false, {
+        const cachePath = await euphonyNative.invokeNative('ns-ntApi', 'nodeIKernelMsgService/getRichMediaFilePathForGuild', false, {
             path_info: {
                 md5HexStr: fileMd5,
-                fileName: nativeFileName,
+                fileName: fileMd5,
                 elementType: 2,
                 elementSubType: 0,
                 thumbSize: 0,
@@ -37,7 +35,7 @@ class Image extends SingleMessage {
         });
         await euphonyNative.invokeNative('ns-FsApi', 'copyFile', false, {
             fromPath: this.#path,
-            toPath: nativeFilePath
+            toPath: cachePath
         });
         return {
             elementId: '',
@@ -48,8 +46,8 @@ class Image extends SingleMessage {
                 fileSize,
                 picWidth: imageSize.width,
                 picHeight: imageSize.height,
-                fileName: nativeFileName,
-                sourcePath: nativeFilePath,
+                fileName: fileMd5,
+                sourcePath: cachePath,
                 original: true,
                 picType: 1001,
                 picSubType: 0,

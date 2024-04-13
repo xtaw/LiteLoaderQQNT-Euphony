@@ -24,14 +24,12 @@ class Audio extends SingleMessage {
     }
 
     async toElement() {
-        const fileType = await euphonyNative.invokeNative('ns-FsApi', 'getFileType', false, this.#path);
         const fileMd5 = await euphonyNative.invokeNative('ns-FsApi', 'getFileMd5', false, this.#path);
         const fileSize = await euphonyNative.invokeNative('ns-FsApi', 'getFileSize', false, this.#path);
-        const nativeFileName = `${ fileMd5 }.${ fileType.ext }`;
-        const nativeFilePath = await euphonyNative.invokeNative('ns-ntApi', 'nodeIKernelMsgService/getRichMediaFilePathForGuild', false, {
+        const cachePath = await euphonyNative.invokeNative('ns-ntApi', 'nodeIKernelMsgService/getRichMediaFilePathForGuild', false, {
             path_info: {
                 md5HexStr: fileMd5,
-                fileName: nativeFileName,
+                fileName: fileMd5,
                 elementType: 2,
                 elementSubType: 0,
                 thumbSize: 0,
@@ -42,15 +40,15 @@ class Audio extends SingleMessage {
         });
         await euphonyNative.invokeNative('ns-FsApi', 'copyFile', false, {
             fromPath: this.#path,
-            toPath: nativeFilePath
+            toPath: cachePath
         });
         return {
             elementId: '',
             elementType: Audio.getElementType(),
             extBufForUI: '0x',
             pttElement: {
-                fileName: nativeFileName,
-                filePath: nativeFilePath,
+                fileName: fileMd5,
+                filePath: cachePath,
                 md5HexStr: fileMd5,
                 fileSize,
                 duration: this.#duration ?? Math.max(1, Math.round(fileSize / 1024 / 3)),
