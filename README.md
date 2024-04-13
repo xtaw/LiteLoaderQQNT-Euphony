@@ -15,6 +15,10 @@ friend.sendMessage(new euphony.PlainText('Hello World!'));
 ```bash
 npm install git@github.com:xtaw/LiteLoaderQQNT-Euphony.git
 ```
+如果你想更新 **Euphony** 到最新版本，你可以使用以下命令：
+```bash
+npm update liteloaderqqnt-euphony
+```
 现在，你可以直接在你的代码中使用 `import` 语句来导入 API：
 ```js
 import { Friend, PlainText } from "liteloaderqqnt-euphony";
