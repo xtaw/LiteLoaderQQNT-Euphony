@@ -1,4 +1,4 @@
-import SingleMessage from "../single_message.js";
+import { SingleMessage } from '../../index.js';
 
 class At extends SingleMessage {
 

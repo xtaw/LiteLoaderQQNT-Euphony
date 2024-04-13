@@ -1,8 +1,12 @@
-import Contact from "./contact.js";
+import { Contact } from '../index.js';
 
 class Friend extends Contact {
 
     #uid;
+
+    static getChatType() { 
+        return 1;
+    }
 
     static fromUin(uin) {
         const uid = euphonyNative.convertUinToUid(uin);
@@ -31,7 +35,7 @@ class Friend extends Contact {
 
     toPeer() {
         return {
-            chatType: 1,
+            chatType: Friend.getChatType(),
             peerUid: this.#uid,
             guildId: ''
         };

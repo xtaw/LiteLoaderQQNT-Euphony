@@ -68,17 +68,27 @@ convertUidToUin(uid)
 ##### (1). #id
 该私有属性在 `Friend` 中表示好友的 **qq号**，在 `Group` 中表示群聊的 **群号**。
 #### 函数
-##### (1). sendMessage
+##### (1). getCurrentContact
+```js
+static getCurrentContact()
+```
+该静态函数返回当前窗口上正在进行的聊天对象，可能为 `Friend` 或 `Group`。如果没有聊天对象，或聊天对象不受支持，则返回 `null`。
+##### (2). getChatType
+```js
+static getChatType()
+```
+该静态函数返回该联系人所对应的 **chatType**。
+##### (3). sendMessage
 ```js
 async sendMessage(message)
 ```
 该函数向该联系人发送一条消息。它接收一个 `SingleMessage` 或一个 `MessageChain` 作为参数，代表发送的消息。
-##### (2). getId
+##### (4). getId
 ```js
 getId()
 ```
 该函数返回该联系人的 `#id` 属性。
-##### (3). toPeer
+##### (5). toPeer
 ```js
 toPeer()
 ```

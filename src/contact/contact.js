@@ -1,8 +1,27 @@
-import SingleMessage from "../message/single_message.js";
+import { SingleMessage, Friend, Group } from '../index.js';
 
 class Contact {
 
     #id;
+
+    static getCurrentContact() {
+        const contact = app?.__vue_app__?.config?.globalProperties?.$store?.state?.common_Aio?.curAioData;
+        const uin = contact?.header?.uin;
+        const uid = contact?.header?.uid;
+        if (!uin || !uid) {
+            return null;
+        }
+        switch (contact.chatType) {
+            case Friend.getChatType():
+                return new Friend(uin, uid);
+            case Group.getChatType():
+                return new Group(uin);
+        }
+    }
+
+    static getChatType() {
+        throw new Error('Abstract method not implemented.');
+    }
 
     constructor(id) {
         this.#id = id;
