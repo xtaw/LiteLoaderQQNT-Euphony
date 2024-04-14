@@ -45,7 +45,6 @@ class Audio extends SingleMessage {
         return {
             elementId: '',
             elementType: Audio.getElementType(),
-            extBufForUI: '0x',
             pttElement: {
                 fileName: fileMd5,
                 filePath: cachePath,

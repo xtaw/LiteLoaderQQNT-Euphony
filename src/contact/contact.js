@@ -1,4 +1,4 @@
-import { SingleMessage, Friend, Group } from '../index.js';
+import { SingleMessage, MessageSource, Friend, Group } from '../index.js';
 
 class Contact {
 
@@ -27,13 +27,17 @@ class Contact {
         this.#id = id;
     }
 
-    async sendMessage(message) {
+    async sendMessage(message, msgId) {
+        if (!msgId) {
+            msgId = `7${ Array.from({ length: 18 }, () => Math.floor(Math.random() * 10)).join('') }`;
+        }
         await euphonyNative.invokeNative('ns-ntApi', 'nodeIKernelMsgService/sendMsg', false, {
-            msgId: '0',
+            msgId,
             peer: this.toPeer(),
             msgElements: message instanceof SingleMessage ? [ await message.toElement() ] : await message.toElements(),
             msgAttributeInfos: new Map()
         });
+        return new MessageSource(msgId, this);
     }
 
     getId() {

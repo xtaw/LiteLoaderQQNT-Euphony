@@ -40,7 +40,6 @@ class Image extends SingleMessage {
         return {
             elementId: '',
             elementType: Image.getElementType(),
-            extBufForUI: '0x',
             picElement: {
                 md5HexStr: fileMd5,
                 fileSize,

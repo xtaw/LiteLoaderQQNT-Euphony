@@ -43,7 +43,6 @@ class At extends SingleMessage {
         return {
             elementId: '',
             elementType: At.getElementType(),
-            extBufForUI: '0x',
             textElement: {
                 atType: 2,
                 atUid: this.#uin,

@@ -21,7 +21,6 @@ class PlainText extends SingleMessage {
         return {
             elementId: '',
             elementType: PlainText.getElementType(),
-            extBufForUI: '0x',
             textElement: {
                 content: this.#content
             }

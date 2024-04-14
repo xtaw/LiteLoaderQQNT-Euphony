@@ -4,6 +4,7 @@ import Group from './contact/group.js';
 
 import SingleMessage from './message/single_message.js';
 import MessageChain from './message/message_chain.js';
+import MessageSource from './message/message_source.js';
 
 import PlainText from './message/content/plain_text.js';
 import Image from './message/content/image.js';
@@ -19,6 +20,7 @@ export {
     Group,
     SingleMessage,
     MessageChain,
+    MessageSource,
     PlainText,
     Image,
     Audio,

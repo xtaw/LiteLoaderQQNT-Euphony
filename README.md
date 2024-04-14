@@ -80,9 +80,11 @@ static getChatType()
 该静态函数返回该联系人所对应的 **chatType**。
 ##### (3). sendMessage
 ```js
-async sendMessage(message)
+async sendMessage(message, msgId)
 ```
-该函数向该联系人发送一条消息。它接收一个 `SingleMessage` 或一个 `MessageChain` 作为参数，代表发送的消息。
+该函数向该联系人发送一条消息，并以 `MessageSource` 类型返回该消息的来源。
+`message` 是一个 `SingleMessage` 或 `MessageChain`，代表发送的消息。
+`msgId` 是一个字符串，代表发送的消息的 **msgId**，如果此参数为空则会随机生成。
 ##### (4). getId
 ```js
 getId()
@@ -169,7 +171,30 @@ remove(index)
 async toElements()
 ```
 该函数返回该消息链所代表的 **elements** 对象。
-### III. PlainText
+### III. MessageSource
+`MessageSource` 类型代表一条消息的来源。
+#### 属性
+##### (1). #msgId
+该私有属性代表该消息来源的 **msgId**。
+##### (2). #contact
+该私有属性代表该消息是从哪个联系人发送或接收的。
+#### 函数
+##### (1). getMsgId
+```js
+getMsgId()
+```
+该函数返回该消息来源的 `#msgId` 属性。
+##### (2). getContact
+```js
+getContact()
+```
+该函数返回该消息来源的 `#contact` 属性。
+##### (3). recall
+```js
+async recall()
+```
+该函数会撤回该消息来源所代表的消息。
+### IV. PlainText
 `PlainText` 类型代表一个纯文本消息元素。
 #### 属性
 ##### (1). #content
@@ -186,7 +211,7 @@ getContent()
 constructor(content)
 ```
 该构造器接收一个消息内容，构造出的对象代表内容为 `content` 的纯文本消息。
-### IV. At
+### V. At
 `At` 类型代表一个@群聊成员元素。
 #### 属性
 ##### (1). #uin
@@ -220,7 +245,7 @@ getUid()
 constructor(uin, uid)
 ```
 该构造器接收 **qq号** 和 **uid**，构造出的对象代表@该 **qq号** 与 **uid** 的群聊成员。
-### V. AtAll
+### VI. AtAll
 `AtAll` 类型代表一个@全体成员元素。
 #### 属性
 ##### (1). #content
@@ -237,7 +262,7 @@ getContent()
 constructor(content = '@全体成员')
 ```
 该构造器接收一个显示内容，构造出的对象代表显示内容为 `content` 的@全体成员。
-### VI. Image
+### VII. Image
 `Image` 类型代表一个图片元素。
 #### 属性
 ##### (1). #path
@@ -254,7 +279,7 @@ getPath()
 constructor(path)
 ```
 该构造器接收一个路径，构造出的对象代表路径为 `path` 的图片。
-### VII. Audio
+### VIII. Audio
 `Audio` 类型代表一个语音元素。
 #### 属性
 ##### (1). #path

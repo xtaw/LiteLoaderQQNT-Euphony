@@ -21,7 +21,6 @@ class AtAll extends SingleMessage {
         return {
             elementId: '',
             elementType: AtAll.getElementType(),
-            extBufForUI: '0x',
             textElement: {
                 atType: 1,
                 atNtUid: 'all',
