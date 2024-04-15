@@ -11,10 +11,7 @@
     }],
 	"repository": {
 		"repo": "xtaw/LiteLoaderQQNT-Euphony",
-		"branch": "master",
-		"release": {
-			"tag": "1.0.0"
-		}
+		"branch": "master"
 	},
     "platform": ["win32", "linux", "darwin"],
     "injects": {
