@@ -80,7 +80,7 @@ static getChatType()
 该静态函数返回该联系人所对应的 **chatType**。
 ##### (3). sendMessage
 ```js
-async sendMessage(message, msgId)
+async sendMessage(message, msgId = undefined)
 ```
 该函数向该联系人发送一条消息，并以 `MessageSource` 类型返回该消息的来源。
 `message` 是一个 `SingleMessage` 或 `MessageChain`，代表发送的消息。
@@ -135,42 +135,71 @@ constructor(id)
 ### I. SingleMessage
 `SingleMessage` 类型代表一个消息元素。
 #### 函数
-##### (1). getElementType
+##### (1). fromNative
+```js
+static fromNative(element)
+```
+该静态函数接收一个原生消息 **element**，构造并返回相应的 `SingleMessage` 对象。
+##### (2). getElementType
 ```js
 static getElementType()
 ```
-该静态函数返回该消息元素所对应的 **elementType**。
-##### (2). toElement
+该静态函数返回该消息元素所对应的 **elementType**，但 `Raw` 类型并不含有该静态函数。
+##### (3). toElement
 ```js
 toElement()
 ```
 该函数返回该消息元素所代表的 **element** 对象。
 ### II. MessageChain
-`MessageChain` 类型代表一条完整的消息，由多个 `SingleMessage` 组成。
+`MessageChain` 类型代表一条完整的消息，由多个 `SingleMessage` 组成。它可以代表一条来自服务器的消息，也可以用于构造本地消息，取决于 `#source` 属性是否存在。
 #### 属性
-##### (1). #messages
+##### (1). #source
+该私有属性代表该消息链的来源，仅当该消息链是服务器消息时该属性才有意义。
+##### (2). #messages
 该私有属性代表构成该消息的所有元素。
 #### 函数
-##### (1). append
+##### (1). getSource
+```js
+getSource()
+```
+该函数返回该消息链的 `#source` 属性，仅当该消息链是服务器消息时该函数才有意义。
+##### (2). append
 ```js
 append(value)
 ```
 该函数接收一个 `SingleMessage`，将其添加至该消息链中。
-##### (2). pop
+##### (3). appendNative
+```js
+appendNative(element)
+```
+该函数接收一个原生消息 **element**，将其添加至该消息链中。
+##### (4). appendNatives
+```js
+appendNatives(elements)
+```
+该函数接收一个原生消息链 **elements**，将其添加至该消息链中。
+##### (5). pop
 ```js
 pop()
 ```
 该函数移除该消息链中最后一条消息。
-##### (3). remove
+##### (6). remove
 ```js
 remove(index)
 ```
 该函数移除该消息链中指定位置的消息。
-##### (4). toElements
+##### (7). toElements
 ```js
 async toElements()
 ```
 该函数返回该消息链所代表的 **elements** 对象。
+#### 构造器
+##### (1). (source)
+```js
+constructor(source = undefined)
+```
+该构造器接收一个消息来源，构造出的对象代表来源于 `source` 的消息链，用于服务器消息。
+若 `source` 参数为空，则构造出的对象代表本地消息链，用于本地消息。
 ### III. MessageSource
 `MessageSource` 类型代表一条消息的来源。
 #### 属性
@@ -300,18 +329,40 @@ getDuration()
 #### 构造器
 ##### (1). (path, duration)
 ```js
-constructor(path, duration)
+constructor(path, duration = undefined)
 ```
 该构造器接收路径和持续时长，构造出的对象代表语音音频路径为 `path`，持续时长为 `duration` 的语音。
 若在构造时不传入 `duration`，则 `toElement` 函数会自动尝试获取语音时长（可能并不准确）。
+### IX. Raw
+`Raw` 类型代表一个原生消息元素，所有暂不受支持的消息类型均会被处理为该类型。
+#### 属性
+##### (1). #element
+该私有属性代表原生消息元素。
+#### 函数
+##### (1). getElement
+```js
+getElement()
+```
+该函数返回该消息元素的 `#element` 属性。
+#### 构造器
+##### (1). (element)
+```js
+constructor(element)
+```
+该构造器接收一个原生消息元素，构造出的对象代表该原生消息元素。
 ## 4. 事件
 **Euphony** 中所有事件操作均由 `EventChannel` 完成。
 
-目前可用的基础事件有：
-1. receive-message 接收到新消息
-2. send-message 发送出新消息
+### I. 基础事件
+#### (1). receive-message
+该事件触发于当qq接收到新消息时。
+事件会传入一个 `MessageChain` 作为参数，表示接收到的新消息。
+#### (2). send-message
+该事件触发于当qq发送出新消息时。
+事件会传入一个 `MessageChain` 作为参数，表示发送出的新消息。
+请注意，该事件在本地消息显示发出后便会触发，而不是服务器收到发送请求后触发，可能存在消息发送失败依然触发该事件的情况，或消息还未发送出去便提前触发了该事件。因此，你无法直接在该事件触发后就去调用 `MessageChain.getSource().recall()` 等函数，因为此时消息还未被真正发送出去。
 
-### I. EventChannel
+### II. EventChannel
 `EventChannel` 是 **Euphony** 完成事件操作的通道。
 #### 属性
 ##### (1). #registry

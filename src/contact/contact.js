@@ -27,7 +27,7 @@ class Contact {
         this.#id = id;
     }
 
-    async sendMessage(message, msgId) {
+    async sendMessage(message, msgId = undefined) {
         if (!msgId) {
             msgId = `7${ Array.from({ length: 18 }, () => Math.floor(Math.random() * 10)).join('') }`;
         }

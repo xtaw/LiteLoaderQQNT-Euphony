@@ -1,12 +1,37 @@
+import { Friend, Group, MessageChain, MessageSource } from '../index.js';
+
 class EventChannel {
 
     #registry = new Map();
 
     static fromNative() {
         const eventChannel = new EventChannel();
-        euphonyNative.subscribeEvent('nodeIKernelMsgListener/onRecvMsg', payload => eventChannel.call('receive-message', payload));
-        euphonyNative.subscribeEvent('nodeIKernelMsgListener/onRecvActiveMsg', payload => eventChannel.call('receive-message', payload));
-        euphonyNative.subscribeEvent('nodeIKernelMsgListener/onAddSendMsg', payload => eventChannel.call('send-message', payload));
+
+        function onReceiveMessage(payload) {
+            const msg = payload?.msgList?.[0];
+            if (!msg) {
+                return;
+            }
+            const contact = msg.chatType == 1 ? new Friend(msg.peerUin, msg.peerUid) : (msg.chatType == 2 ? new Group(msg.peerUin) : null);
+            const source = new MessageSource(msg.msgId, contact);
+            const messageChain = new MessageChain(source);
+            messageChain.appendNatives(msg.elements);
+            eventChannel.call('receive-message', messageChain);
+        }
+
+        euphonyNative.subscribeEvent('nodeIKernelMsgListener/onRecvMsg', onReceiveMessage);
+        euphonyNative.subscribeEvent('nodeIKernelMsgListener/onRecvActiveMsg', onReceiveMessage);
+        euphonyNative.subscribeEvent('nodeIKernelMsgListener/onAddSendMsg', payload => {
+            const msgRecord = payload?.msgRecord;
+            if (!msgRecord) {
+                return;
+            }
+            const contact = msgRecord.chatType == 1 ? new Friend(msgRecord.peerUin, msgRecord.peerUid) : (msgRecord.chatType == 2 ? new Group(msgRecord.peerUin) : null);
+            const source = new MessageSource(msgRecord.msgId, contact);
+            const messageChain = new MessageChain(source);
+            messageChain.appendNatives(msgRecord.elements);
+            eventChannel.call('send-message', messageChain);
+        });
         return eventChannel;
     }
 

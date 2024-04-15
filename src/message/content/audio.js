@@ -9,7 +9,7 @@ class Audio extends SingleMessage {
         return 4;
     }
 
-    constructor(path, duration) {
+    constructor(path, duration = undefined) {
         super();
         this.#path = path;
         this.#duration = duration;

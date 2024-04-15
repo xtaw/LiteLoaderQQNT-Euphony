@@ -11,6 +11,7 @@ import Image from './message/content/image.js';
 import Audio from './message/content/audio.js';
 import At from './message/content/at.js';
 import AtAll from './message/content/at_all.js';
+import Raw from './message/content/raw.js';
 
 import EventChannel from './event/event_channel.js';
 
@@ -26,5 +27,6 @@ export {
     Audio,
     At,
     AtAll,
+    Raw,
     EventChannel
 }

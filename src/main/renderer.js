@@ -1,4 +1,4 @@
-import { Contact, Friend, Group, SingleMessage, MessageChain, MessageSource, PlainText, Image, Audio, At, AtAll, EventChannel } from '../index.js';
+import { Contact, Friend, Group, SingleMessage, MessageChain, MessageSource, PlainText, Image, Audio, At, AtAll, Raw, EventChannel } from '../index.js';
 
 Object.defineProperty(window, 'euphony', {
     value: {
@@ -13,6 +13,7 @@ Object.defineProperty(window, 'euphony', {
         Audio,
         At,
         AtAll,
+        Raw,
         EventChannel
     },
     writable: false
