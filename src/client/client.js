@@ -12,8 +12,8 @@ class Client {
         euphonyNative.subscribeEvent('onBuddyListChange', payload => {
             const friends = [];
             for (const category of payload.data) {
-                for (const friend of category.buddyList) {
-                    friends.push(Friend.make(friend.uin, friend.uid));
+                for (const buddy of category.buddyList) {
+                    friends.push(Friend.make(buddy.uin, buddy.uid));
                 }
             }
             Client.#friends = friends;

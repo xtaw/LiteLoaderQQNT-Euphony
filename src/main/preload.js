@@ -70,9 +70,9 @@ contextBridge.exposeInMainWorld('euphonyNative', {
 
 subscribeEvent('onBuddyListChange', payload => {
     for (const category of payload.data) {
-        for (const friend of category.buddyList) {
-            uinToUidMap.set(friend.uin, friend.uid);
-            uidToUinMap.set(friend.uid, friend.uin);
+        for (const buddy of category.buddyList) {
+            uinToUidMap.set(buddy.uin, buddy.uid);
+            uidToUinMap.set(buddy.uid, buddy.uin);
         }
     }
 });
