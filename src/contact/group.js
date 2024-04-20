@@ -1,4 +1,4 @@
-import { Contact } from '../index.js';
+import { Cache, Contact } from '../index.js';
 
 /**
  * `Group` 类型代表群聊。
@@ -15,6 +15,18 @@ class Group extends Contact {
 
     /**
      * 构造一个 **群号** 为 `id` 的群聊。
+     * 该函数构造出的群聊全局只有一个实例，相同的 `id` 将会返回相同的对象。
+     * 在任何情况下，都应该使用该函数来构造群聊，而非直接使用构造器。
+     * @param { String } id 群聊的 **群号**。
+     * @returns { Group } 构造出的群聊。
+     */
+    static make(id) {
+        return Cache.withCache(`group-${ id }`, () => new Group(id));
+    }
+
+    /**
+     * 构造一个 **群号** 为 `id` 的群聊。
+     * 注意：在任何情况下，都不应该直接使用该构造器来构造群聊。相反地，你应该使用 `Group.make(id)` 函数来构造群聊。
      * @param { String } id 群聊的 **群号**。
      */
     constructor(id) {

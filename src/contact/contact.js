@@ -23,7 +23,7 @@ class Contact {
             case Friend.getChatType():
                 return Friend.make(uin, uid);
             case Group.getChatType():
-                return new Group(uin);
+                return Group.make(uin);
         }
     }
 
