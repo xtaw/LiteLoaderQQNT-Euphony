@@ -3,6 +3,11 @@ const { contextBridge, ipcRenderer } = require('electron');
 const uinToUidMap = new Map();
 const uidToUinMap = new Map();
 
+let { webContentsId } = ipcRenderer.sendSync('___!boot');
+if (!webContentsId) {
+    webContentsId = 2;
+}
+
 /**
  * 调用一个qq底层函数，并返回函数返回值。
  * @param { String } eventName 函数事件名。
@@ -16,15 +21,15 @@ function invokeNative(eventName, cmdName, registered, ...args) {
         const callbackId = crypto.randomUUID();
         const callback = (event, ...args) => {
             if (args?.[0]?.callbackId == callbackId) {
-                ipcRenderer.off('IPC_DOWN_2', callback);
+                ipcRenderer.off(`IPC_DOWN_${ webContentsId }`, callback);
                 resolve(args[1]);
             }
         };
-        ipcRenderer.on('IPC_DOWN_2', callback);
-        ipcRenderer.send('IPC_UP_2', {
+        ipcRenderer.on(`IPC_DOWN_${ webContentsId }`, callback);
+        ipcRenderer.send(`IPC_UP_${ webContentsId }`, {
             type: 'request',
             callbackId,
-            eventName: `${ eventName }-2${ registered ? '-register' : '' }`
+            eventName: `${ eventName }-${ webContentsId }${ registered ? '-register' : '' }`
         }, [ cmdName, ...args ]);
     });
 } 
@@ -41,7 +46,7 @@ function subscribeEvent(cmdName, handler) {
             handler(args[1][0].payload);
         }
     };
-    ipcRenderer.on('IPC_DOWN_2', listener);
+    ipcRenderer.on(`IPC_DOWN_${ webContentsId }`, listener);
     return listener;
 }
 
@@ -53,7 +58,7 @@ contextBridge.exposeInMainWorld('euphonyNative', {
      * 请注意，`handler` 并不是传入 `subscribeEvent` 的处理器，而是其返回的新处理器。
      * @param { Function } handler 事件处理器。
      */
-    unsubscribeEvent: handler => ipcRenderer.off('IPC_DOWN_2', handler),
+    unsubscribeEvent: handler => ipcRenderer.off(`IPC_DOWN_${ webContentsId }`, handler),
     /**
      * 获取好友 `uin` 代表的 **uid**。
      * @param { String } uin 好友的 **qq号**。
@@ -65,7 +70,8 @@ contextBridge.exposeInMainWorld('euphonyNative', {
      * @param { String } uid 好友的 **uid**。
      * @returns { String } 好友 `uid` 代表的 **qq号**。
      */
-    convertUidToUin: uid => uidToUinMap.get(uid)
+    convertUidToUin: uid => uidToUinMap.get(uid),
+    a: () => webContentsId
 });
 
 subscribeEvent('onBuddyListChange', payload => {
