@@ -20,11 +20,15 @@ class Client {
             Client.#friends = friends;
         });
         euphonyNative.subscribeEvent('onGroupListUpdate', payload => {
-            const groups = [];
-            for (const nativeGroup of payload.groupList) {
-                groups.push(Group.make(nativeGroup.groupCode));
+            if (payload.updateType == 1) {
+                const groups = [];
+                for (const nativeGroup of payload.groupList) {
+                    groups.push(Group.make(nativeGroup.groupCode));
+                }
+                Client.#groups = groups;
+            } else {
+                euphonyNative.invokeNative('ns-ntApi', 'nodeIKernelGroupService/getGroupList', false, { forceFetch: true });
             }
-            Client.#groups = groups;
         });
     }
 
