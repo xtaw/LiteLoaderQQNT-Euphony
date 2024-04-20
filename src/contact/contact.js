@@ -21,7 +21,7 @@ class Contact {
         }
         switch (contact.chatType) {
             case Friend.getChatType():
-                return new Friend(uin, uid);
+                return Friend.make(uin, uid);
             case Group.getChatType():
                 return new Group(uin);
         }

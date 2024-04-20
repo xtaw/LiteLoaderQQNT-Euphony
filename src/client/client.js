@@ -13,7 +13,7 @@ class Client {
             const friends = [];
             for (const category of payload.data) {
                 for (const friend of category.buddyList) {
-                    friends.push(new Friend(friend.uin, friend.uid));
+                    friends.push(Friend.make(friend.uin, friend.uid));
                 }
             }
             Client.#friends = friends;

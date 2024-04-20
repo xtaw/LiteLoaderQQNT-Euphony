@@ -20,7 +20,7 @@ class EventChannel {
             if (!msg) {
                 return;
             }
-            const contact = msg.chatType == 1 ? new Friend(msg.peerUin, msg.peerUid) : (msg.chatType == 2 ? new Group(msg.peerUin) : null);
+            const contact = msg.chatType == 1 ? Friend.make(msg.peerUin, msg.peerUid) : (msg.chatType == 2 ? new Group(msg.peerUin) : null);
             const source = new MessageSource(msg.msgId, contact);
             const messageChain = new MessageChain(source);
             messageChain.appendNatives(msg.elements);
@@ -34,7 +34,7 @@ class EventChannel {
             if (!msgRecord) {
                 return;
             }
-            const contact = msgRecord.chatType == 1 ? new Friend(msgRecord.peerUin, msgRecord.peerUid) : (msgRecord.chatType == 2 ? new Group(msgRecord.peerUin) : null);
+            const contact = msgRecord.chatType == 1 ? Friend.make(msgRecord.peerUin, msgRecord.peerUid) : (msgRecord.chatType == 2 ? new Group(msgRecord.peerUin) : null);
             const source = new MessageSource(msgRecord.msgId, contact);
             const messageChain = new MessageChain(source);
             messageChain.appendNatives(msgRecord.elements);
