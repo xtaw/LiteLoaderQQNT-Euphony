@@ -1,6 +1,8 @@
 # 一. 什么是 Euphony
 **Euphony** 是一个为 **LiteLoaderQQNT** 插件提供基础功能的依赖。通过 **Euphony**，你可以简单快速地实现你需要的功能。
 # 二. 使用方法
+请注意，**Euphony** 的代码均应运行在 `renderer.js` 中，而不是 `main.js` 或 `preload.js`。
+
 你可以通过以下两种方式在你的插件中使用 **Euphony** 所提供的 API：
 ## 1. 直接使用 window 中的对象
 **Euphony** 插件会在本身被加载时向 **window** 中导出一个名为 **euphony** 的对象，其中包含所有 API。你可以直接使用它来访问你所需要的 API。
