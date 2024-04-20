@@ -77,3 +77,4 @@ subscribeEvent('onBuddyListChange', payload => {
     }
 });
 invokeNative('ns-ntApi', 'nodeIKernelBuddyService/getBuddyList', false, { force_update: true });
+invokeNative('ns-ntApi', 'nodeIKernelGroupService/getGroupList', false, { forceFetch: true });

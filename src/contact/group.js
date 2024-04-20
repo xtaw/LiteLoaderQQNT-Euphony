@@ -2,8 +2,29 @@ import { Cache, Contact } from '../index.js';
 
 /**
  * `Group` 类型代表群聊。
+ * @property { String } #name 群聊名称。
+ * @property { Number } #maxMemberCount 群聊最大人数。
+ * @property { Number } #memberCount 群聊人数。
+ * @property { String } #remark 群聊备注。
  */
 class Group extends Contact {
+
+    #name;
+    #maxMemberCount;
+    #memberCount;
+    #remark;
+
+    static {
+        euphonyNative.subscribeEvent('onGroupListUpdate', payload => {
+            for (const nativeGroup of payload.groupList) {
+                const group = Group.make(nativeGroup.groupCode);
+                group.#name = nativeGroup.groupName;
+                group.#maxMemberCount = nativeGroup.maxMember;
+                group.#memberCount = nativeGroup.memberCount;
+                group.#remark = nativeGroup.remarkName;
+            }
+        });
+    }
 
     /**
      * 返回该联系人类型所对应的 **chatType**，值为 **2**。
@@ -31,6 +52,38 @@ class Group extends Contact {
      */
     constructor(id) {
         super(id);
+    }
+
+    /**
+     * 返回该群聊的 `#name` 属性。
+     * @returns { String } 该群聊的 `#name` 属性。
+     */
+    getName() {
+        return this.#name;
+    }
+
+    /**
+     * 返回该群聊的 `#maxMemberCount` 属性。
+     * @returns { Number } 该群聊的 `#maxMemberCount` 属性。
+     */
+    getMaxMemberCount() {
+        return this.#maxMemberCount;
+    }
+
+    /**
+     * 返回该群聊的 `#memberCount` 属性。
+     * @returns { Number } 该群聊的 `#memberCount` 属性。
+     */
+    getMemberCount() {
+        return this.#memberCount;
+    }
+
+    /**
+     * 返回该群聊的 `#remark` 属性。
+     * @returns { String } 该群聊的 `#remark` 属性。
+     */
+    getRemark() {
+        return this.#remark;
     }
 
     /**
