@@ -5,6 +5,11 @@
 const uinToUidMap = new Map();
 const uidToUinMap = new Map();
 
+let { webContentsId } = ipcRenderer.sendSync('___!boot');
+if (!webContentsId) {
+    webContentsId = 2;
+}
+
 /**
  * 调用一个qq底层函数，并返回函数返回值。
  * @param { String } eventName 函数事件名。
@@ -18,15 +23,15 @@ function invokeNative(eventName, cmdName, registered, ...args) {
         const callbackId = crypto.randomUUID();
         const callback = (event, ...args) => {
             if (args?.[0]?.callbackId == callbackId) {
-                ipcRenderer.off('IPC_DOWN_2', callback);
+                ipcRenderer.off(`IPC_DOWN_${ webContentsId }`, callback);
                 resolve(args[1]);
             }
         };
-        ipcRenderer.on('IPC_DOWN_2', callback);
-        ipcRenderer.send('IPC_UP_2', {
+        ipcRenderer.on(`IPC_DOWN_${ webContentsId }`, callback);
+        ipcRenderer.send(`IPC_UP_${ webContentsId }`, {
             type: 'request',
             callbackId,
-            eventName: `${ eventName }-2${ registered ? '-register' : '' }`
+            eventName: `${ eventName }-${ webContentsId }${ registered ? '-register' : '' }`
         }, [ cmdName, ...args ]);
     });
 } 
@@ -43,7 +48,7 @@ function subscribeEvent(cmdName, handler) {
             handler(args[1][0].payload);
         }
     };
-    ipcRenderer.on('IPC_DOWN_2', listener);
+    ipcRenderer.on(`IPC_DOWN_${ webContentsId }`, listener);
     return listener;
 }
 
@@ -55,7 +60,7 @@ contextBridge.exposeInMainWorld('euphonyNative', {
      * 请注意，`handler` 并不是传入 `subscribeEvent` 的处理器，而是其返回的新处理器。
      * @param { Function } handler 事件处理器。
      */
-    unsubscribeEvent: handler => ipcRenderer.off('IPC_DOWN_2', handler),
+    unsubscribeEvent: handler => ipcRenderer.off(`IPC_DOWN_${ webContentsId }`, handler),
     /**
      * 获取好友 `uin` 代表的 **uid**。
      * @param { String } uin 好友的 **qq号**。
@@ -67,15 +72,17 @@ contextBridge.exposeInMainWorld('euphonyNative', {
      * @param { String } uid 好友的 **uid**。
      * @returns { String } 好友 `uid` 代表的 **qq号**。
      */
-    convertUidToUin: uid => uidToUinMap.get(uid)
+    convertUidToUin: uid => uidToUinMap.get(uid),
+    a: () => webContentsId
 });
 
 subscribeEvent('onBuddyListChange', payload => {
     for (const category of payload.data) {
-        for (const friend of category.buddyList) {
-            uinToUidMap.set(friend.uin, friend.uid);
-            uidToUinMap.set(friend.uid, friend.uin);
+        for (const buddy of category.buddyList) {
+            uinToUidMap.set(buddy.uin, buddy.uid);
+            uidToUinMap.set(buddy.uid, buddy.uin);
         }
     }
 });
-invokeNative('ns-ntApi', 'nodeIKernelBuddyService/getBuddyList', false, { force_update: true });</code></pre></article></section></div></div></div><div class="search-container" id="PkfLWpAbet" style="display:none"><div class="wrapper" id="iCxFxjkHbP"><button class="icon-button search-close-button" id="VjLlGakifb" aria-label="close search"><svg><use xlink:href="#close-icon"></use></svg></button><div class="search-box-c"><svg><use xlink:href="#search-icon"></use></svg> <input type="text" id="vpcKVYIppa" class="search-input" placeholder="Search..." autofocus></div><div class="search-result-c" id="fWwVHRuDuN"><span class="search-result-c-text">Type anything to view search result</span></div></div></div><div class="mobile-menu-icon-container"><button class="icon-button" id="mobile-menu" data-isopen="false" aria-label="menu"><svg><use xlink:href="#menu-icon"></use></svg></button></div><div id="mobile-sidebar" class="mobile-sidebar-container"><div class="mobile-sidebar-wrapper"><a href="/" class="sidebar-title sidebar-title-anchor">Euphony</a><div class="mobile-nav-links"></div><div class="mobile-sidebar-items-c"><div class="sidebar-section-title with-arrow" data-isopen="false" id="sidebar-classes"><div>Classes</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="At.html">At</a></div><div class="sidebar-section-children"><a href="AtAll.html">AtAll</a></div><div class="sidebar-section-children"><a href="Audio.html">Audio</a></div><div class="sidebar-section-children"><a href="Cache.html">Cache</a></div><div class="sidebar-section-children"><a href="Client.html">Client</a></div><div class="sidebar-section-children"><a href="Contact.html">Contact</a></div><div class="sidebar-section-children"><a href="EventChannel.html">EventChannel</a></div><div class="sidebar-section-children"><a href="Friend.html">Friend</a></div><div class="sidebar-section-children"><a href="Group.html">Group</a></div><div class="sidebar-section-children"><a href="Image.html">Image</a></div><div class="sidebar-section-children"><a href="MessageChain.html">MessageChain</a></div><div class="sidebar-section-children"><a href="MessageSource.html">MessageSource</a></div><div class="sidebar-section-children"><a href="PlainText.html">PlainText</a></div><div class="sidebar-section-children"><a href="Raw.html">Raw</a></div><div class="sidebar-section-children"><a href="SingleMessage.html">SingleMessage</a></div></div><div class="sidebar-section-title with-arrow" data-isopen="false" id="sidebar-global"><div>Global</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="global.html#convertUidToUin">convertUidToUin</a></div><div class="sidebar-section-children"><a href="global.html#convertUinToUid">convertUinToUid</a></div><div class="sidebar-section-children"><a href="global.html#invokeNative">invokeNative</a></div><div class="sidebar-section-children"><a href="global.html#subscribeEvent">subscribeEvent</a></div><div class="sidebar-section-children"><a href="global.html#unsubscribeEvent">unsubscribeEvent</a></div></div></div><div class="mobile-navbar-actions"><div class="navbar-right-item"><button class="icon-button search-button" aria-label="open-search"><svg><use xlink:href="#search-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button theme-toggle" aria-label="toggle-theme"><svg><use class="theme-svg-use" xlink:href="#dark-theme-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button font-size" aria-label="change-font-size"><svg><use xlink:href="#font-size-icon"></use></svg></button></div></div></div></div><script type="text/javascript" src="scripts/core.min.js"></script><script src="scripts/search.min.js" defer="defer"></script><script src="scripts/third-party/fuse.js" defer="defer"></script><script type="text/javascript">var tocbotInstance=tocbot.init({tocSelector:"#eed4d2a0bfd64539bb9df78095dec881",contentSelector:".main-content",headingSelector:"h1, h2, h3",hasInnerContainers:!0,scrollContainer:".main-content",headingsOffset:130,onClick:bringLinkToView})</script></body></html>
+invokeNative('ns-ntApi', 'nodeIKernelBuddyService/getBuddyList', false, { force_update: true });
+invokeNative('ns-ntApi', 'nodeIKernelGroupService/getGroupList', false, { forceFetch: true });</code></pre></article></section></div></div></div><div class="search-container" id="PkfLWpAbet" style="display:none"><div class="wrapper" id="iCxFxjkHbP"><button class="icon-button search-close-button" id="VjLlGakifb" aria-label="close search"><svg><use xlink:href="#close-icon"></use></svg></button><div class="search-box-c"><svg><use xlink:href="#search-icon"></use></svg> <input type="text" id="vpcKVYIppa" class="search-input" placeholder="Search..." autofocus></div><div class="search-result-c" id="fWwVHRuDuN"><span class="search-result-c-text">Type anything to view search result</span></div></div></div><div class="mobile-menu-icon-container"><button class="icon-button" id="mobile-menu" data-isopen="false" aria-label="menu"><svg><use xlink:href="#menu-icon"></use></svg></button></div><div id="mobile-sidebar" class="mobile-sidebar-container"><div class="mobile-sidebar-wrapper"><a href="/" class="sidebar-title sidebar-title-anchor">Euphony</a><div class="mobile-nav-links"></div><div class="mobile-sidebar-items-c"><div class="sidebar-section-title with-arrow" data-isopen="false" id="sidebar-classes"><div>Classes</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="At.html">At</a></div><div class="sidebar-section-children"><a href="AtAll.html">AtAll</a></div><div class="sidebar-section-children"><a href="Audio.html">Audio</a></div><div class="sidebar-section-children"><a href="Cache.html">Cache</a></div><div class="sidebar-section-children"><a href="Client.html">Client</a></div><div class="sidebar-section-children"><a href="Contact.html">Contact</a></div><div class="sidebar-section-children"><a href="EventChannel.html">EventChannel</a></div><div class="sidebar-section-children"><a href="Friend.html">Friend</a></div><div class="sidebar-section-children"><a href="Group.html">Group</a></div><div class="sidebar-section-children"><a href="Image.html">Image</a></div><div class="sidebar-section-children"><a href="MessageChain.html">MessageChain</a></div><div class="sidebar-section-children"><a href="MessageSource.html">MessageSource</a></div><div class="sidebar-section-children"><a href="PlainText.html">PlainText</a></div><div class="sidebar-section-children"><a href="Raw.html">Raw</a></div><div class="sidebar-section-children"><a href="SingleMessage.html">SingleMessage</a></div></div><div class="sidebar-section-title with-arrow" data-isopen="false" id="sidebar-global"><div>Global</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="global.html#convertUidToUin">convertUidToUin</a></div><div class="sidebar-section-children"><a href="global.html#convertUinToUid">convertUinToUid</a></div><div class="sidebar-section-children"><a href="global.html#invokeNative">invokeNative</a></div><div class="sidebar-section-children"><a href="global.html#subscribeEvent">subscribeEvent</a></div><div class="sidebar-section-children"><a href="global.html#unsubscribeEvent">unsubscribeEvent</a></div></div></div><div class="mobile-navbar-actions"><div class="navbar-right-item"><button class="icon-button search-button" aria-label="open-search"><svg><use xlink:href="#search-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button theme-toggle" aria-label="toggle-theme"><svg><use class="theme-svg-use" xlink:href="#dark-theme-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button font-size" aria-label="change-font-size"><svg><use xlink:href="#font-size-icon"></use></svg></button></div></div></div></div><script type="text/javascript" src="scripts/core.min.js"></script><script src="scripts/search.min.js" defer="defer"></script><script src="scripts/third-party/fuse.js" defer="defer"></script><script type="text/javascript">var tocbotInstance=tocbot.init({tocSelector:"#eed4d2a0bfd64539bb9df78095dec881",contentSelector:".main-content",headingSelector:"h1, h2, h3",hasInnerContainers:!0,scrollContainer:".main-content",headingsOffset:130,onClick:bringLinkToView})</script></body></html>
