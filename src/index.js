@@ -15,6 +15,10 @@ import Raw from './message/content/raw.js';
 
 import EventChannel from './event/event_channel.js';
 
+import Client from './client/client.js';
+
+import Cache from './cache/cache.js';
+
 export {
     Contact,
     Friend,
@@ -28,5 +32,7 @@ export {
     At,
     AtAll,
     Raw,
-    EventChannel
+    EventChannel,
+    Client,
+    Cache
 }
