@@ -2,6 +2,7 @@ import { SingleMessage } from '../../index.js';
 
 /**
  * `Image` 类型代表一个图片消息元素。
+ * 
  * @property { String } #path 图片路径。
  */
 class Image extends SingleMessage {
@@ -10,6 +11,7 @@ class Image extends SingleMessage {
 
     /**
      * 返回该消息元素所对应的 **elementType**，值为 **2**。
+     * 
      * @returns { Number } 该消息元素所对应的 **elementType**，值为 **2**。
      */
     static getElementType() {
@@ -18,6 +20,7 @@ class Image extends SingleMessage {
 
     /**
      * 构造一个路径为 `path` 的图片消息元素。
+     * 
      * @param { String } path 图片路径。
      */
     constructor(path) {
@@ -27,6 +30,7 @@ class Image extends SingleMessage {
 
     /**
      * 返回该消息元素的 `#path` 属性。
+     * 
      * @returns { String } 该消息元素的 `#path` 属性。
      */
     getPath() {
@@ -35,6 +39,7 @@ class Image extends SingleMessage {
 
     /**
      * 构造并返回该消息元素所对应的 **element** 对象。
+     * 
      * @returns { Native } 该消息元素所对应的 **element** 对象。
      */
     async toElement() {

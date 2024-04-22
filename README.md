@@ -25,7 +25,7 @@ import { Friend, PlainText } from '../LiteLoaderQQNT-Euphony/src/index.js';
 ### 示例
 ```js
 import { Group, AtAll, PlainText, MessageChain } from '../LiteLoaderQQNT-Euphony/src/index.js';
-const group = new Group(10000);
+const group = Group.make(10000);
 group.sendMessage(new MessageChain().append(new AtAll('Content')).append(new PlainText('Hello World!')));
 ```
 这段代码会向 **群号** 为 **10000** 的群发送一条消息，其中包含一个显示为 **Content** 的@全体成员，以及一个内容为 **Hello World!** 的纯文本。
@@ -39,19 +39,23 @@ group.sendMessage(new MessageChain().append(new AtAll('Content')).append(new Pla
 **Euphony** 在 `preload.js` 中导出了 `euphonyNative` 对象用于一些与 qq 底层交互的操作。
 你可以在 [API文档](https://xtaw.github.io/LiteLoaderQQNT-Euphony/) 中的 **Global** 部分查看详情介绍。
 ## 2. 基础事件
-###  使用示例
+###  示例
 ```js
 import { EventChannel } from '../LiteLoaderQQNT-Euphony/src/index.js';
 const eventChannel = EventChannel.fromNative();
-eventChannel.subscribeEvent('receive-message', message => {
+eventChannel.subscribeEvent('receive-message', (message, source) => {
     console.log(message);
+    console.log(source);
 });
 ```
 上面这段代码会监听 **receive-message** 事件，并输出事件参数。
 ### (1). receive-message
 该事件触发于当qq接收到新消息时。
-事件会传入一个 `MessageChain` 作为参数，表示接收到的新消息。
+
+事件会传入 `MessageChain` 和 `MessageSource` 作为参数，表示接收到的新消息及消息来源。
 ### (2). send-message
 该事件触发于当qq发送出新消息时。
-事件会传入一个 `MessageChain` 作为参数，表示发送出的新消息。
+
+事件会传入 `MessageChain` 和 `MessageSource` 作为参数，表示发送出的新消息及消息来源。
+
 请注意，该事件在本地消息显示发出后便会触发，而不是服务器收到发送请求后触发，可能存在消息发送失败依然触发该事件的情况，或消息还未发送出去便提前触发了该事件。因此，你无法直接在该事件触发后就去调用 `MessageChain.getSource().recall()` 等函数，因为此时消息还未被真正发送出去。

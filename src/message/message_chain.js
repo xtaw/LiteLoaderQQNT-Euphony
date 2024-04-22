@@ -1,37 +1,17 @@
-import { MessageSource, SingleMessage } from '../index.js';
+import { At, AtAll, PlainText, SingleMessage } from '../index.js';
 
 /**
  * `MessageChain` 类型代表一条完整的消息，由多个 `SingleMessage` 组成。
- * 它可以代表一条来自服务器的消息，也可以用于表示本地消息。这取决于 `#source` 属性是否存在。
- * @property { MessageSource } #source 该消息链的来源。仅当该消息链是服务器消息时该属性才有意义。
+ * 
  * @property { Array } #messages 构成该消息链的所有元素。接收的类型应为 `SingleMessage`。
  */
 class MessageChain {
 
-    #source;
-
     #messages = [];
 
     /**
-     * 构造一个来源为 `source` 的消息链。
-     * 若 `source` 参数为空，则构造出的对象代表本地消息链。
-     * @param { MessageSource } source 消息来源。
-     */
-    constructor(source = undefined) {
-        this.#source = source;
-    }
-
-    /**
-     * 返回该消息链的 `#source` 属性。
-     * 仅当该消息链是服务器消息时该函数才有意义。
-     * @returns { MessageSource } 该消息链的 `#source` 属性。
-     */
-    getSource() {
-        return this.#source;
-    }
-
-    /**
      * 将一个消息元素添加至该消息链中。
+     * 
      * @param { SingleMessage } value 要添加的消息元素。
      * @returns { MessageChain } 该消息链。
      */
@@ -42,6 +22,7 @@ class MessageChain {
 
     /**
      * 将一个消息元素添加至该消息链中。
+     * 
      * @param { Native } element 要添加的原生消息元素。
      * @returns { MessageChain } 该消息链。
      */
@@ -52,6 +33,7 @@ class MessageChain {
 
     /**
      * 将一个消息链添加至该消息链中。
+     * 
      * @param { Native } elements 要添加的原生消息链。
      * @returns { MessageChain } 该消息链。
      */
@@ -64,6 +46,7 @@ class MessageChain {
 
     /**
      * 移除该消息链中最后一个消息元素。
+     * 
      * @returns { MessageChain } 该消息链。 
      */
     pop() {
@@ -73,6 +56,7 @@ class MessageChain {
 
     /**
      * 移除该消息链中指定位置的消息元素。
+     * 
      * @param { Number } index 要移除的消息元素的位置。
      * @returns { MessageChain } 该消息链。
      */
@@ -82,7 +66,49 @@ class MessageChain {
     }
 
     /**
+     * 获取该消息链中指定位置的消息元素。
+     * 
+     * @param { Number } index 要获取的消息元素的位置。
+     * @returns { SingleMessage } 获取到的消息元素。
+     */
+    get(index) {
+        return this.#messages[index];
+    }
+
+    /**
+     * 将该消息链转化为与qq原生显示一致的字符串形式。
+     * 
+     * 例如：
+     * 
+     * `Image` 将会被视为 "[图片]"。
+     * 
+     * `Audio` 将会被视为 "[语音]"。
+     * 
+     * 但由于 `At` 类型不包括群消息，目前 `At` 只会被视为 "**@qq号**" 的形式。
+     * 
+     * @returns { String } 转化后的字符串。
+     */
+    contentToString() {
+        const result = [];
+        for (const message of this.#messages) {
+            if (message instanceof PlainText) {
+                result.push(message.getContent());
+            } else if (message instanceof At) {
+                result.push(`@${ message.getUin() }`);
+            } else if (message instanceof AtAll) {
+                result.push(message.getContent());
+            } else if (message instanceof Image) {
+                result.push('[图片]');
+            } else if (message instanceof Audio) {
+                result.push('[语音]');
+            }
+        }
+        return result.join('');
+    }
+
+    /**
      * 构造并返回该消息链所对应的 **elements** 对象。
+     * 
      * @returns { Native } 该消息链所对应的 **elements** 对象。
      */
     async toElements() {

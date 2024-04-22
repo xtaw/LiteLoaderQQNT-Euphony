@@ -10,9 +10,10 @@ if (!webContentsId) {
 
 /**
  * 调用一个qq底层函数，并返回函数返回值。
+ * 
  * @param { String } eventName 函数事件名。
  * @param { String } cmdName 函数名。
- * @param { Boolean } registered 函数是否注册。
+ * @param { Boolean } registered 函数是否为一个注册事件函数。
  * @param  { ...any } args 函数参数。
  * @returns { Promise<any> } 函数返回值。
  */
@@ -36,6 +37,7 @@ function invokeNative(eventName, cmdName, registered, ...args) {
 
 /**
  * 为qq底层事件 `cmdName` 添加 `handler` 处理器。
+ * 
  * @param { String } cmdName 事件名称。
  * @param { Function } handler 事件处理器。
  * @returns { Function } 新的处理器。
@@ -55,23 +57,26 @@ contextBridge.exposeInMainWorld('euphonyNative', {
     subscribeEvent,
     /**
      * 移除qq底层事件的 `handler` 处理器。
+     * 
      * 请注意，`handler` 并不是传入 `subscribeEvent` 的处理器，而是其返回的新处理器。
+     * 
      * @param { Function } handler 事件处理器。
      */
     unsubscribeEvent: handler => ipcRenderer.off(`IPC_DOWN_${ webContentsId }`, handler),
     /**
-     * 获取好友 `uin` 代表的 **uid**。
-     * @param { String } uin 好友的 **qq号**。
-     * @returns { String } 好友 `uin` 代表的 **uid**。
+     * 获取 `uin` 代表的 **uid**。
+     * 
+     * @param { String } uin **qq号**。
+     * @returns { String } `uin` 代表的 **uid**。
      */
     convertUinToUid: uin => uinToUidMap.get(uin),
     /**
-     * 获取好友 `uid` 代表的 **qq号**。
-     * @param { String } uid 好友的 **uid**。
-     * @returns { String } 好友 `uid` 代表的 **qq号**。
+     * 获取 `uid` 代表的 **qq号**。
+     * 
+     * @param { String } uid **uid**。
+     * @returns { String } `uid` 代表的 **qq号**。
      */
-    convertUidToUin: uid => uidToUinMap.get(uid),
-    a: () => webContentsId
+    convertUidToUin: uid => uidToUinMap.get(uid)
 });
 
 subscribeEvent('onBuddyListChange', payload => {
@@ -82,5 +87,32 @@ subscribeEvent('onBuddyListChange', payload => {
         }
     }
 });
+
+subscribeEvent('onGroupListUpdate', payload => {
+    if (payload.updateType == 1) {
+        for (const nativeGroup of payload.groupList) {
+            invokeNative('ns-ntApi', 'nodeIKernelGroupService/createMemberListScene', false, {
+                groupCode: nativeGroup.groupCode,
+                scene: 'groupMemberList_MainWindow'
+            }).then(sceneId => {
+                invokeNative('ns-ntApi', 'nodeIKernelGroupService/getNextMemberList', false, {
+                    sceneId,
+                    num: nativeGroup.memberCount
+                });
+            });
+        }
+    } else {
+        invokeNative('ns-ntApi', 'nodeIKernelGroupService/getGroupList', false, { forceFetch: true });
+    }
+});
+
+subscribeEvent('nodeIKernelGroupListener/onMemberInfoChange', payload => {
+    for (const [uid, nativeMember] of payload.members) {
+        uinToUidMap.set(nativeMember.uin, uid);
+        uidToUinMap.set(uid, nativeMember.uin);
+    }
+});
+
+invokeNative('ns-ntApi', 'nodeIKernelGroupListener/onMemberInfoChange', true);
 invokeNative('ns-ntApi', 'nodeIKernelBuddyService/getBuddyList', false, { force_update: true });
 invokeNative('ns-ntApi', 'nodeIKernelGroupService/getGroupList', false, { forceFetch: true });

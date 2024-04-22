@@ -1,6 +1,7 @@
 import Contact from './contact/contact.js';
 import Friend from './contact/friend.js';
 import Group from './contact/group.js';
+import Member from './contact/member.js';
 
 import SingleMessage from './message/single_message.js';
 import MessageChain from './message/message_chain.js';
@@ -23,6 +24,7 @@ export {
     Contact,
     Friend,
     Group,
+    Member,
     SingleMessage,
     MessageChain,
     MessageSource,

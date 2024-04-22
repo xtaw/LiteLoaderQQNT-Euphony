@@ -2,8 +2,9 @@ import { SingleMessage } from '../../index.js';
 
 /**
  * `Audio` 类型代表一个语音消息元素。
+ * 
  * @property { String } #path 音频路径。
- * @property { Number } #duration 语音显示时长。单位为秒。
+ * @property { Number } #duration 语音显示时长（单位：秒）。
  */
 class Audio extends SingleMessage {
 
@@ -12,6 +13,7 @@ class Audio extends SingleMessage {
 
     /**
      * 返回该消息元素所对应的 **elementType**，值为 **4**。
+     * 
      * @returns { Number } 该消息元素所对应的 **elementType**，值为 **4**。
      */
     static getElementType() {
@@ -20,7 +22,9 @@ class Audio extends SingleMessage {
 
     /**
      * 构造一个路径为 `path`，显示时长为 `duration` 的语音消息元素。
+     * 
      * 若不传入 `duration`，则 `toElement` 函数会尝试自动计算语音时长（可能完全不准确）。
+     * 
      * @param { String } path 音频路径。
      * @param { Number } duration 语音显示时长。单位为秒。
      */
@@ -32,6 +36,7 @@ class Audio extends SingleMessage {
 
     /**
      * 返回该消息元素的 `#path` 属性。
+     * 
      * @returns { String } 该消息元素的 `#path` 属性。
      */
     getPath() {
@@ -40,6 +45,7 @@ class Audio extends SingleMessage {
 
     /**
      * 返回该消息元素的 `#duration` 属性。
+     * 
      * @returns { Number } 该消息元素的 `#duration` 属性。
      */
     getDuration() {
@@ -48,6 +54,7 @@ class Audio extends SingleMessage {
 
     /**
      * 构造并返回该消息元素所对应的 **element** 对象。
+     * 
      * @returns { Native } 该消息元素所对应的 **element** 对象。
      */
     async toElement() {

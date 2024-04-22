@@ -2,6 +2,7 @@ import { Friend, Group, MessageChain, MessageSource } from '../index.js';
 
 /**
  * `EventChannel` 是 **Euphony** 完成事件操作的通道。
+ * 
  * @property { Map } #registry 事件注册表。
  */
 class EventChannel {
@@ -10,6 +11,7 @@ class EventChannel {
 
     /**
      * 构造并返回一个带有基础事件触发器的事件通道。
+     * 
      * @returns { EventChannel } 带有基础事件触发器的事件通道。
      */
     static fromNative() {
@@ -22,9 +24,7 @@ class EventChannel {
             }
             const contact = msg.chatType == 1 ? Friend.make(msg.peerUin, msg.peerUid) : (msg.chatType == 2 ? Group.make(msg.peerUin) : null);
             const source = new MessageSource(msg.msgId, contact);
-            const messageChain = new MessageChain(source);
-            messageChain.appendNatives(msg.elements);
-            eventChannel.call('receive-message', messageChain);
+            eventChannel.call('receive-message', new MessageChain().appendNatives(msg.elements), source);
         }
 
         euphonyNative.subscribeEvent('nodeIKernelMsgListener/onRecvMsg', onReceiveMessage);
@@ -36,15 +36,14 @@ class EventChannel {
             }
             const contact = msgRecord.chatType == 1 ? Friend.make(msgRecord.peerUin, msgRecord.peerUid) : (msgRecord.chatType == 2 ? Group.make(msgRecord.peerUin) : null);
             const source = new MessageSource(msgRecord.msgId, contact);
-            const messageChain = new MessageChain(source);
-            messageChain.appendNatives(msgRecord.elements);
-            eventChannel.call('send-message', messageChain);
+            eventChannel.call('send-message', new MessageChain().appendNatives(msgRecord.elements), source);
         });
         return eventChannel;
     }
 
     /**
      * 为事件 `eventName` 添加一个 `handler` 处理器。
+     * 
      * @param { String } eventName 事件名称。
      * @param { Function } handler 事件处理器。
      * @returns { Function } 传入的 `handler`。
@@ -59,6 +58,7 @@ class EventChannel {
 
     /**
      * 移除事件 `eventName` 的 `handler` 处理器。
+     * 
      * @param { String } eventName 事件名称。
      * @param { Function } handler 事件处理器。
      */
@@ -74,6 +74,7 @@ class EventChannel {
 
     /**
      * 触发事件 `eventName` 并传入参数 `args`。
+     * 
      * @param { String } eventName 事件名称。
      * @param  { ...any } args 事件参数。
      */
