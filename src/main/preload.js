@@ -101,8 +101,6 @@ subscribeEvent('onGroupListUpdate', payload => {
                 });
             });
         }
-    } else {
-        invokeNative('ns-ntApi', 'nodeIKernelGroupService/getGroupList', false, { forceFetch: true });
     }
 });
 

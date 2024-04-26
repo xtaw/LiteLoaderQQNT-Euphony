@@ -3,30 +3,33 @@ import { Cache, Friend, Group } from '../index.js';
 /**
  * `Client` 类型代表自身客户端。
  * 
- * @property { Array } #friends 客户端好友列表。
+ * @property { Set<Friend> } #friends 客户端好友列表。
+ * @property { Set<Group> } #groups 客户端群列表。
  */
 class Client {
 
-    static #friends = [];
-    static #groups = [];
+    static #friends = new Set();
+    static #groups = new Set();
 
     static {
         euphonyNative.subscribeEvent('onBuddyListChange', payload => {
-            const friends = [];
+            const friends = new Set();
             for (const category of payload.data) {
                 for (const buddy of category.buddyList) {
-                    friends.push(Friend.make(buddy.uin, buddy.uid));
+                    friends.add(Friend.make(buddy.uin, buddy.uid));
                 }
             }
             Client.#friends = friends;
         });
         euphonyNative.subscribeEvent('onGroupListUpdate', payload => {
-            if (payload.updateType == 1) {
-                const groups = [];
+            if (payload.updateType == 3) {
                 for (const nativeGroup of payload.groupList) {
-                    groups.push(Group.make(nativeGroup.groupCode));
+                    Client.#groups.delete(Group.make(nativeGroup.groupCode));
                 }
-                Client.#groups = groups;
+            } else {
+                for (const nativeGroup of payload.groupList) {
+                    Client.#groups.add(Group.make(nativeGroup.groupCode));
+                }
             }
         });
     }
@@ -52,7 +55,7 @@ class Client {
     /**
      * 获取客户端好友列表。
      * 
-     * @returns { Array<Friend> } 客户端好友列表。
+     * @returns { Set<Friend> } 客户端好友列表。
      */
     static getFriends() {
         return Client.#friends;
@@ -61,7 +64,7 @@ class Client {
     /**
      * 获取客户端群列表。
      * 
-     * @returns { Array<Group> } 客户端群列表。
+     * @returns { Set<Group> } 客户端群列表。
      */
     static getGroups() {
         return Client.#groups;

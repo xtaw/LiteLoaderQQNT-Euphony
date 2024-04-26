@@ -34,7 +34,7 @@ group.sendMessage(new MessageChain().append(new AtAll('Content')).append(new Pla
 # 三. API介绍
 你可以在这里查看所有API介绍：[API文档](https://xtaw.github.io/LiteLoaderQQNT-Euphony/)
 
-请注意，由于 **Euphony** 目前正处于开发初期，各 API 尚未完全实现，也并不稳定，很可能在将来发生很大变化。
+请注意，由于 **Euphony** 目前正处于开发初期，各 API 并不稳定，很可能在将来发生很大变化。
 ## 1. Native
 **Euphony** 在 `preload.js` 中导出了 `euphonyNative` 对象用于一些与 qq 底层交互的操作。
 你可以在 [API文档](https://xtaw.github.io/LiteLoaderQQNT-Euphony/) 中的 **Global** 部分查看详情介绍。
