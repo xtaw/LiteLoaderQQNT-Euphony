@@ -9,7 +9,7 @@ class SingleMessage {
      * 从原生消息元素构造出一个 `SingleMessage` 对象。
      * 
      * @param { Native } element 原生消息元素。
-     * @returns { SingleMessage } 原生消息所对应的 `SingleMessage` 对象。
+     * @returns { SingleMessage } 原生消息元素所对应的 `SingleMessage` 对象。
      */
     static fromNative(element) {
         switch (element?.elementType) {

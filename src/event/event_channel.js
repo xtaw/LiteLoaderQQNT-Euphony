@@ -3,7 +3,7 @@ import { Friend, Group, MessageChain, MessageSource } from '../index.js';
 /**
  * `EventChannel` 是 **Euphony** 完成事件操作的通道。
  * 
- * @property { Map } #registry 事件注册表。
+ * @property { Map<String, Array<Function>> } #registry 事件注册表。
  */
 class EventChannel {
 
@@ -14,7 +14,7 @@ class EventChannel {
      * 
      * @returns { EventChannel } 带有封装事件触发器的事件通道。
      */
-    static fromNative() {
+    static withTriggers() {
         const eventChannel = new EventChannel();
 
         function onReceiveMessage(payload) {
@@ -24,7 +24,7 @@ class EventChannel {
             }
             const contact = msg.chatType == 1 ? Friend.make(msg.peerUin, msg.peerUid) : (msg.chatType == 2 ? Group.make(msg.peerUin) : null);
             const source = new MessageSource(msg.msgId, contact);
-            eventChannel.call('receive-message', new MessageChain().appendNatives(msg.elements), source);
+            eventChannel.call('receive-message', MessageChain.fromNative(msg.elements), source);
         }
 
         euphonyNative.subscribeEvent('nodeIKernelMsgListener/onRecvMsg', onReceiveMessage);
@@ -36,7 +36,7 @@ class EventChannel {
             }
             const contact = msgRecord.chatType == 1 ? Friend.make(msgRecord.peerUin, msgRecord.peerUid) : (msgRecord.chatType == 2 ? Group.make(msgRecord.peerUin) : null);
             const source = new MessageSource(msgRecord.msgId, contact);
-            eventChannel.call('send-message', new MessageChain().appendNatives(msgRecord.elements), source);
+            eventChannel.call('send-message', MessageChain.fromNative(msgRecord.elements), source);
         });
         return eventChannel;
     }
