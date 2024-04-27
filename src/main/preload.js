@@ -52,17 +52,21 @@ function subscribeEvent(cmdName, handler) {
     return listener;
 }
 
+/**
+ * 移除qq底层事件的 `handler` 处理器。
+ * 
+ * 请注意，`handler` 并不是传入 `subscribeEvent` 的处理器，而是其返回的新处理器。
+ * 
+ * @param { Function } handler 事件处理器。
+ */
+function unsubscribeEvent(handler) {
+    ipcRenderer.off(`IPC_DOWN_${ webContentsId }`, handler);
+}
+
 contextBridge.exposeInMainWorld('euphonyNative', {
     invokeNative,
     subscribeEvent,
-    /**
-     * 移除qq底层事件的 `handler` 处理器。
-     * 
-     * 请注意，`handler` 并不是传入 `subscribeEvent` 的处理器，而是其返回的新处理器。
-     * 
-     * @param { Function } handler 事件处理器。
-     */
-    unsubscribeEvent: handler => ipcRenderer.off(`IPC_DOWN_${ webContentsId }`, handler),
+    unsubscribeEvent,
     /**
      * 获取 `uin` 代表的 **uid**。
      * 
@@ -88,7 +92,14 @@ subscribeEvent('onBuddyListChange', payload => {
     }
 });
 
-subscribeEvent('onGroupListUpdate', payload => {
+subscribeEvent('nodeIKernelGroupListener/onMemberInfoChange', payload => {
+    for (const [uid, nativeMember] of payload.members) {
+        uinToUidMap.set(nativeMember.uin, uid);
+        uidToUinMap.set(uid, nativeMember.uin);
+    }
+});
+
+const memberLoader = subscribeEvent('onGroupListUpdate', payload => {
     if (payload.updateType == 1) {
         for (const nativeGroup of payload.groupList) {
             invokeNative('ns-ntApi', 'nodeIKernelGroupService/createMemberListScene', false, {
@@ -101,13 +112,7 @@ subscribeEvent('onGroupListUpdate', payload => {
                 });
             });
         }
-    }
-});
-
-subscribeEvent('nodeIKernelGroupListener/onMemberInfoChange', payload => {
-    for (const [uid, nativeMember] of payload.members) {
-        uinToUidMap.set(nativeMember.uin, uid);
-        uidToUinMap.set(uid, nativeMember.uin);
+        unsubscribeEvent(memberLoader);
     }
 });
 

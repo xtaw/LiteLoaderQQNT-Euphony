@@ -2,30 +2,8 @@ import { Cache, Contact, Member } from '../index.js';
 
 /**
  * `Group` 类型代表群聊。
- * 
- * @property { String } #name 群聊名称。
- * @property { Number } #maxMemberCount 群聊最大人数。
- * @property { Number } #memberCount 群聊人数。
- * @property { String } #remark 群聊备注。
  */
 class Group extends Contact {
-
-    #name;
-    #maxMemberCount;
-    #memberCount;
-    #remark;
-
-    static {
-        euphonyNative.subscribeEvent('onGroupListUpdate', payload => {
-            for (const nativeGroup of payload.groupList) {
-                const group = Group.make(nativeGroup.groupCode);
-                group.#name = nativeGroup.groupName;
-                group.#maxMemberCount = nativeGroup.maxMember;
-                group.#memberCount = nativeGroup.memberCount;
-                group.#remark = nativeGroup.remarkName;
-            }
-        });
-    }
 
     /**
      * 返回该联系人类型所对应的 **chatType**，值为 **2**。
@@ -62,39 +40,52 @@ class Group extends Contact {
     }
 
     /**
-     * 返回该群聊的 `#name` 属性。
+     * 获取并返回该群聊在原生qq中的对象。
      * 
-     * @returns { String } 该群聊的 `#name` 属性。
+     * @returns { Native } 原生群聊对象。
+     */
+    getNative() {
+        const groupMap = app?.__vue_app__?.config?.globalProperties?.$store?.state?.common_Contact_group?.groupMap;
+        if (!groupMap) {
+            return null;
+        }
+        return groupMap[this.getId()];
+    }
+
+    /**
+     * 获取并返回该群聊的群聊名称。
+     * 
+     * @returns { String } 群聊名称。
      */
     getName() {
-        return this.#name;
+        return this.getNative()?.groupName;
     }
 
     /**
-     * 返回该群聊的 `#maxMemberCount` 属性。
+     * 获取并返回该群聊的群聊最大人数。
      * 
-     * @returns { Number } 该群聊的 `#maxMemberCount` 属性。
+     * @returns { Number } 群聊最大人数。
      */
     getMaxMemberCount() {
-        return this.#maxMemberCount;
+        return this.getNative()?.maxMember;
     }
 
     /**
-     * 返回该群聊的 `#memberCount` 属性。
+     * 获取并返回该群聊的群聊人数。
      * 
-     * @returns { Number } 该群聊的 `#memberCount` 属性。
+     * @returns { Number } 群聊人数。
      */
     getMemberCount() {
-        return this.#memberCount;
+        return this.getNative()?.memberCount;
     }
 
     /**
-     * 返回该群聊的 `#remark` 属性。
+     * 获取并返回该群聊的群聊备注。
      * 
-     * @returns { String } 该群聊的 `#remark` 属性。
+     * @returns { String } 群聊备注。
      */
     getRemark() {
-        return this.#remark;
+        return this.getNative()?.remarkName;
     }
 
     /**
@@ -141,7 +132,7 @@ class Group extends Contact {
         });
         const members = await euphonyNative.invokeNative('ns-ntApi', 'nodeIKernelGroupService/getNextMemberList', false, {
             sceneId,
-            num: this.#memberCount
+            num: this.getMemberCount()
         });
         const result = [];
         for (const [uid, nativeMember] of members.result.infos) {

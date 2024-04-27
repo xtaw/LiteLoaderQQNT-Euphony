@@ -38,7 +38,7 @@ group.sendMessage(new MessageChain().append(new AtAll('Content')).append(new Pla
 ## 1. Native
 **Euphony** 在 `preload.js` 中导出了 `euphonyNative` 对象用于一些与 qq 底层交互的操作。
 你可以在 [API文档](https://xtaw.github.io/LiteLoaderQQNT-Euphony/) 中的 **Global** 部分查看详情介绍。
-## 2. 基础事件
+## 2. 封装事件
 ###  示例
 ```js
 import { EventChannel } from '../LiteLoaderQQNT-Euphony/src/index.js';

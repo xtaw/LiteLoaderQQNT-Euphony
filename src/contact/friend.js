@@ -4,35 +4,10 @@ import { Cache, Contact } from '../index.js';
  * `Friend` 类型代表好友。
  * 
  * @property { String } #uid 好友的 **uid**。
- * @property { Date } #birthday 好友的生日。
- * @property { String } #bio 好友的个性签名。
- * @property { String } #nick 好友的昵称。
- * @property { String } #qid 好友的 **qid**。
- * @property { String } #remark 好友备注。
  */
 class Friend extends Contact {
 
     #uid;
-    #birthday;
-    #bio;
-    #nick;
-    #qid;
-    #remark;
-
-    static {
-        euphonyNative.subscribeEvent('onBuddyListChange', payload => {
-            for (const category of payload.data) {
-                for (const buddy of category.buddyList) {
-                    const friend = Friend.make(buddy.uin, buddy.uid);
-                    friend.#birthday = new Date(buddy.birthday_year, buddy.birthday_month - 1, buddy.birthday_day);
-                    friend.#bio = buddy.longNick;
-                    friend.#nick = buddy.nick;
-                    friend.#qid = buddy.qid;
-                    friend.#remark = buddy.remark;
-                }
-            }
-        });
-    }
 
     /**
      * 返回该联系人类型所对应的 **chatType**，值为 **1**。
@@ -104,6 +79,19 @@ class Friend extends Contact {
     }
 
     /**
+     * 获取并返回该好友在原生qq中的对象。
+     * 
+     * @returns { Native } 原生好友对象。
+     */
+    getNative() {
+        const buddyMap = app?.__vue_app__?.config?.globalProperties?.$store?.state?.common_Contact_buddy?.buddyMap;
+        if (!buddyMap) {
+            return null;
+        }
+        return buddyMap[this.#uid];
+    }
+
+    /**
      * 返回该好友的 `#uid` 属性。
      * 
      * @returns { String } 该好友的 `#uid` 属性。
@@ -113,48 +101,52 @@ class Friend extends Contact {
     }
 
     /**
-     * 返回该好友的 `#birthday` 属性。
+     * 获取并返回该好友的生日。
      * 
-     * @returns { Date } 该好友的 `#birthday` 属性。
+     * @returns { Date } 生日。
      */
     getBirthday() {
-        return this.#birthday;
+        const buddy = this.getNative();
+        if (!buddy) {
+            return null;
+        }
+        return new Date(buddy.birthday_year, buddy.birthday_month - 1, buddy.birthday_day);
     }
 
     /**
-     * 返回该好友的 `#bio` 属性。
+     * 获取并返回该好友的个性签名。
      * 
-     * @returns { String } 该好友的 `#bio` 属性。
+     * @returns { String } 个性签名。
      */
     getBio() {
-        return this.#bio;
+        return this.getNative()?.longNick;
     }
 
     /**
-     * 返回该好友的 `#nick` 属性。
+     * 获取并返回该好友的昵称。
      * 
-     * @returns { String } 该好友的 `#nick` 属性。
+     * @returns { String } 昵称。
      */
     getNick() {
-        return this.#nick;
+        return this.getNative()?.nick;
     }
 
     /**
-     * 返回该好友的 `#qid` 属性。
+     * 获取并返回该好友的 **qid**。
      * 
-     * @returns { String } 该好友的 `#qid` 属性。
+     * @returns { String } **qid**。
      */
     getQid() {
-        return this.#qid;
+        return this.getNative()?.qid;
     }
 
     /**
-     * 返回该好友的 `#remark` 属性。
+     * 获取并返回该好友的好友备注。
      * 
-     * @returns { String } 该好友的 `#remark` 属性。
+     * @returns { String } 好友备注。
      */
     getRemark() {
-        return this.#remark;
+        return this.getNative()?.remark;
     }
 
     /**

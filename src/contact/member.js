@@ -146,6 +146,8 @@ class Member extends Contact {
      * 
      * 若 `duration` 为 0，则会解除该群聊成员的禁言。
      * 
+     * 实际上，该函数可以做到只禁言 **1s**，尽管在某些设备上无法显示 **1s** 的时长。
+     * 
      * @param { Number } duration 禁言时长（单位：秒）。
      */
     async mute(duration) {
