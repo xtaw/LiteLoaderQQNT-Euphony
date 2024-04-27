@@ -1,4 +1,4 @@
-import { At, AtAll, PlainText, SingleMessage } from '../index.js';
+import { At, AtAll, Audio, Image, PlainText, SingleMessage } from '../index.js';
 
 /**
  * `MessageChain` 类型代表一条完整的消息，由多个 `SingleMessage` 组成。
