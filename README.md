@@ -42,13 +42,13 @@ group.sendMessage(new MessageChain().append(new AtAll('Content')).append(new Pla
 ###  示例
 ```js
 import { EventChannel } from '../LiteLoaderQQNT-Euphony/src/index.js';
-const eventChannel = EventChannel.fromNative();
+const eventChannel = EventChannel.withTriggers();
 eventChannel.subscribeEvent('receive-message', (message, source) => {
-    console.log(message);
-    console.log(source);
+    console.log(message.contentToString());
+    console.log(source.getContact().getId());
 });
 ```
-上面这段代码会监听 **receive-message** 事件，并输出事件参数。
+上面这段代码会监听 **receive-message** 事件，并输出消息的字符串形式及消息发送者的 **id**。
 ### (1). receive-message
 该事件触发于当qq接收到新消息时。
 
