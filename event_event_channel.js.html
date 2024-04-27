@@ -12,9 +12,9 @@ class EventChannel {
     #registry = new Map();
 
     /**
-     * 构造并返回一个带有基础事件触发器的事件通道。
+     * 构造并返回一个带有封装事件触发器的事件通道。
      * 
-     * @returns { EventChannel } 带有基础事件触发器的事件通道。
+     * @returns { EventChannel } 带有封装事件触发器的事件通道。
      */
     static fromNative() {
         const eventChannel = new EventChannel();
