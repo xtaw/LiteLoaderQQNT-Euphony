@@ -16,6 +16,7 @@
     "platform": ["win32", "linux", "darwin"],
     "injects": {
         "renderer": "./src/main/renderer.js",
+        "main": "./src/main/main.js",
         "preload": "./src/main/preload.js"
     }
 }
