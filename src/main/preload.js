@@ -1,7 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-const uinToUidMap = new Map();
-const uidToUinMap = new Map();
+const convertor = new Map();
 
 let { webContentsId } = ipcRenderer.sendSync('___!boot');
 if (!webContentsId) {
@@ -73,29 +72,29 @@ contextBridge.exposeInMainWorld('euphonyNative', {
      * @param { String } uin **qq号**。
      * @returns { String } `uin` 代表的 **uid**。
      */
-    convertUinToUid: uin => uinToUidMap.get(uin),
+    convertUinToUid: uin => convertor.get(uin),
     /**
      * 获取 `uid` 代表的 **qq号**。
      * 
      * @param { String } uid **uid**。
      * @returns { String } `uid` 代表的 **qq号**。
      */
-    convertUidToUin: uid => uidToUinMap.get(uid)
+    convertUidToUin: uid => convertor.get(uid)
 });
 
 subscribeEvent('onBuddyListChange', payload => {
     for (const category of payload.data) {
         for (const buddy of category.buddyList) {
-            uinToUidMap.set(buddy.uin, buddy.uid);
-            uidToUinMap.set(buddy.uid, buddy.uin);
+            convertor.set(buddy.uin, buddy.uid);
+            convertor.set(buddy.uid, buddy.uin);
         }
     }
 });
 
 subscribeEvent('nodeIKernelGroupListener/onMemberInfoChange', payload => {
     for (const [uid, nativeMember] of payload.members) {
-        uinToUidMap.set(nativeMember.uin, uid);
-        uidToUinMap.set(uid, nativeMember.uin);
+        convertor.set(nativeMember.uin, uid);
+        convertor.set(uid, nativeMember.uin);
     }
 });
 

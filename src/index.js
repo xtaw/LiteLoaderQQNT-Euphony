@@ -20,6 +20,8 @@ import Client from './client/client.js';
 
 import Cache from './cache/cache.js';
 
+import ChatFuncBar from './client/ui/chat_func_bar.js';
+
 export {
     Contact,
     Friend,
@@ -36,5 +38,6 @@ export {
     Raw,
     EventChannel,
     Client,
-    Cache
+    Cache,
+    ChatFuncBar
 }
