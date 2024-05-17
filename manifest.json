@@ -4,7 +4,7 @@
     "name": "Euphony",
     "slug": "euphony",
     "description": "一个为LiteLoaderQQNT插件提供基础功能的依赖",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "authors": [{
         "name": "xtaw",
         "link": "https://github.com/xtaw"
