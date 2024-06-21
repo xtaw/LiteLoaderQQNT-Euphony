@@ -17,6 +17,8 @@ friend.sendMessage(new euphony.PlainText('Hello World!'));
 
 例如你的项目文件夹为 `LiteLoaderQQNT-Plugin`，`renderer.js` 位于 `LiteLoaderQQNT-Plugin/src/renderer.js`，你可以将 **Euphony** 复制到 `LiteLoaderQQNT-Plugin/LiteLoaderQQNT-Euphony`。
 
+若你觉得这样会使你的项目体积增大，你可以自行删减 **Euphony**，只保留你需要的 API。
+
 现在，你可以直接在你的代码中使用 `import` 语句来导入 API：
 ```js
 import { Friend, PlainText } from '../LiteLoaderQQNT-Euphony/src/index.js';

@@ -82,6 +82,25 @@ contextBridge.exposeInMainWorld('euphonyNative', {
     convertUidToUin: uid => convertor.get(uid)
 });
 
+contextBridge.exposeInMainWorld('euphonyInternal', {
+    getClientKey: () => ipcRenderer.invoke(
+        'LiteLoader.euphony.getClientKey'
+    ),
+    getPskey: (uin, clientKey, keyIndex, domain) => ipcRenderer.invoke(
+        'LiteLoader.euphony.getPskey',
+        uin,
+        clientKey,
+        keyIndex,
+        domain
+    ),
+    drawLuckyCard: (uin, friendUin, pskey) => ipcRenderer.invoke(
+        'LiteLoader.euphony.drawLuckyCard',
+        uin,
+        friendUin,
+        pskey
+    )
+});
+
 subscribeEvent('onBuddyListChange', payload => {
     for (const category of payload.data) {
         for (const buddy of category.buddyList) {

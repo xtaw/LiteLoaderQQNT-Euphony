@@ -18,9 +18,14 @@ import EventChannel from './event/event_channel.js';
 
 import Client from './client/client.js';
 
-import Cache from './cache/cache.js';
+import Cache from './util/cache.js';
 
 import ChatFuncBar from './client/ui/chat_func_bar.js';
+
+import ClientKey from './model/client_key.js';
+import LuckyCard from './model/lucky_card.js';
+
+import Base64Util from './util/base64_util.js';
 
 export {
     Contact,
@@ -39,5 +44,8 @@ export {
     EventChannel,
     Client,
     Cache,
-    ChatFuncBar
+    ChatFuncBar,
+    ClientKey,
+    LuckyCard,
+    Base64Util
 }

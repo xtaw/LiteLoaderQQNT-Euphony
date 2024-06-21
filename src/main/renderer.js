@@ -1,4 +1,4 @@
-import { Contact, Friend, Group, Member, SingleMessage, MessageChain, MessageSource, PlainText, Image, Audio, At, AtAll, Raw, EventChannel, Client, Cache, ChatFuncBar } from '../index.js';
+import { Contact, Friend, Group, Member, SingleMessage, MessageChain, MessageSource, PlainText, Image, Audio, At, AtAll, Raw, EventChannel, Client, Cache, ChatFuncBar, ClientKey, LuckyCard, Base64Util } from '../index.js';
 
 const chatFuncBarCss = document.createElement('link');
 chatFuncBarCss.rel = 'stylesheet';
@@ -23,7 +23,10 @@ Object.defineProperty(window, 'euphony', {
         EventChannel,
         Client,
         Cache,
-        ChatFuncBar
+        ChatFuncBar,
+        ClientKey,
+        LuckyCard,
+        Base64Util
     },
     writable: false
 });
