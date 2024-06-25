@@ -4,15 +4,15 @@
     "name": "Euphony",
     "slug": "euphony",
     "description": "一个为LiteLoaderQQNT插件提供基础功能的依赖",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "authors": [{
         "name": "xtaw",
         "link": "https://github.com/xtaw"
     }],
-	"repository": {
-		"repo": "xtaw/LiteLoaderQQNT-Euphony",
-		"branch": "master"
-	},
+    "repository": {
+        "repo": "xtaw/LiteLoaderQQNT-Euphony",
+        "branch": "master"
+    },
     "platform": ["win32", "linux", "darwin"],
     "injects": {
         "renderer": "./src/main/renderer.js",
