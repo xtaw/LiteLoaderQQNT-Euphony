@@ -15,6 +15,8 @@ import AtAll from './message/content/at_all.js';
 import Raw from './message/content/raw.js';
 
 import EventChannel from './event/event_channel.js';
+import SimpleMessageEvent from './event/simple_message_event.js';
+import GroupMessageEvent from './event/group_message_event.js';
 
 import Client from './client/client.js';
 
@@ -42,6 +44,8 @@ export {
     AtAll,
     Raw,
     EventChannel,
+    SimpleMessageEvent,
+    GroupMessageEvent,
     Client,
     Cache,
     ChatFuncBar,

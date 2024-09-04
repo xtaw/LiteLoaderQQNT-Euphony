@@ -1,4 +1,4 @@
-import { Friend, Group, MessageChain, MessageSource } from '../index.js';
+import { Friend, Group, GroupMessageEvent, MessageChain, MessageSource, SimpleMessageEvent } from '../index.js';
 
 /**
  * `EventChannel` 是 **Euphony** 完成事件操作的通道。
@@ -24,7 +24,14 @@ class EventChannel {
             }
             const contact = msg.chatType == 1 ? Friend.make(msg.peerUin, msg.peerUid) : (msg.chatType == 2 ? Group.make(msg.peerUin) : null);
             const source = new MessageSource(msg.msgId, contact);
-            eventChannel.call('receive-message', MessageChain.fromNative(msg.elements), source);
+            const message = MessageChain.fromNative(msg.elements);
+
+            if(msg.chatType == 2){
+                eventChannel.call('receive-message', new GroupMessageEvent(msg, message, source, msg.senderUin));
+            }else{
+                eventChannel.call('receive-message', new SimpleMessageEvent(msg, message, source));
+            }
+
         }
 
         euphonyNative.subscribeEvent('nodeIKernelMsgListener/onRecvMsg', onReceiveMessage);
