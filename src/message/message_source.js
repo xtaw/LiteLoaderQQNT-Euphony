@@ -1,3 +1,5 @@
+import { Member } from '../index.js';
+
 /**
  * `MessageSource` 类型代表一条消息的来源。
  * 
@@ -50,7 +52,25 @@ class MessageSource {
             peer: this.#contact.toPeer()
         });
     }
-
+    
+    /**
+     * 标记消息已读
+     *
+     * @returns {Promise<void>}
+     */
+    async setMsgRead() {
+        if (this.#contact instanceof Member) {
+            // 群消息，只能全标记为已读
+            console.log('source', this.#contact.getGroup().toPeer());
+            await euphonyNative.invokeNative('ns-ntApi', 'nodeIKernelMsgService/setMsgRead', false, {
+                peer: this.#contact.getGroup().toPeer()
+            });
+        } else {
+            await euphonyNative.invokeNative('ns-ntApi', 'nodeIKernelMsgService/setMsgRead', false, {
+                peer: this.#contact.toPeer()
+            });
+        }
+    }
 }
 
 export default MessageSource
